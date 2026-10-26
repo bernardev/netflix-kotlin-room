@@ -20,15 +20,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun TelaMenu(viewModel: PerfilViewModel, voltar: () -> Unit, sair: () -> Unit, irParaEditar: () -> Unit, irParaDownloads: () -> Unit) {
+
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val perfilDAO = db.perfilDAO()
+
+    // Ao abrir a tela, busca os perfis no banco
+    LaunchedEffect(Unit) {
+        viewModel.carregar(perfilDAO)
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -65,9 +77,9 @@ fun TelaMenu(viewModel: PerfilViewModel, voltar: () -> Unit, sair: () -> Unit, i
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             viewModel.perfis.forEach {
-                Perfil(
-                    it,
-                    if (it == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
+                ItemPerfil(
+                    it.nome,
+                    if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
                     Modifier.size(48.dp),
                     { viewModel.selecionar(it) }
                 )

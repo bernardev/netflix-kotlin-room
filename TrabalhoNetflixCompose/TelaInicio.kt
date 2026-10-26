@@ -1,5 +1,7 @@
 package com.example.netflix
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +19,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irParaBuscar: () -> Unit, irParaMenu: () -> Unit, irParaFilme: () -> Unit) {
+fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irParaBuscar: () -> Unit, irParaMenu: () -> Unit, irParaFilme: (Int) -> Unit) {
+
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val filmeDAO = db.filmeDAO()
+
+    // Ao abrir a tela, busca os filmes no banco (na primeira vez tambem grava os filmes iniciais)
+    LaunchedEffect(Unit) {
+        filmeViewModel.carregar(filmeDAO)
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(26, 15, 38)
@@ -136,22 +150,30 @@ fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Cartaz("Outer Banks", Color(62, 92, 118)) {
-                        filmeViewModel.selecionar("Outer Banks")
-                        irParaFilme()
+                        abrirFilme("Outer Banks", filmeViewModel, context, irParaFilme)
                     }
                     Cartaz("O Mentalista", Color(140, 28, 19)) {
-                        filmeViewModel.selecionar("O Mentalista")
-                        irParaFilme()
+                        abrirFilme("O Mentalista", filmeViewModel, context, irParaFilme)
                     }
                     Cartaz("The Vampire Diaries", Color(46, 42, 79)) {
-                        filmeViewModel.selecionar("The Vampire Diaries")
-                        irParaFilme()
+                        abrirFilme("The Vampire Diaries", filmeViewModel, context, irParaFilme)
                     }
                 }
             }
 
             BarraInferior("inicio", viewModel.perfilAtual, {}, irParaBuscar, irParaMenu)
         }
+    }
+}
+
+// Cartazes fixos: acha o id do filme pelo nome e abre a tela dele.
+// Se o filme foi renomeado ou excluido, avisa em vez de abrir uma tela vazia.
+fun abrirFilme(nome: String, filmeViewModel: FilmeViewModel, context: Context, irParaFilme: (Int) -> Unit) {
+    val id = filmeViewModel.idPorNome(nome)
+    if (id == 0) {
+        Toast.makeText(context, "Filme nao encontrado", Toast.LENGTH_SHORT).show()
+    } else {
+        irParaFilme(id)
     }
 }
 

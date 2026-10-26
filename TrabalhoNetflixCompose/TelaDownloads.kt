@@ -20,13 +20,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TelaDownloads(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irParaInicio: () -> Unit, irParaBuscar: () -> Unit, irParaMenu: () -> Unit, irParaFilme: () -> Unit) {
+fun TelaDownloads(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irParaInicio: () -> Unit, irParaBuscar: () -> Unit, irParaMenu: () -> Unit, irParaFilme: (Int) -> Unit) {
+
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val filmeDAO = db.filmeDAO()
+
+    // Ao abrir a tela, busca no banco so os filmes baixados
+    LaunchedEffect(Unit) {
+        filmeViewModel.carregarBaixados(filmeDAO)
+    }
+
     Scaffold(
         bottomBar = { BarraInferior("downloads", viewModel.perfilAtual, irParaInicio, irParaBuscar, irParaMenu) }
     ) { innerPadding ->
@@ -53,15 +65,14 @@ fun TelaDownloads(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, ir
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            ItemFilme(it) {
-                                filmeViewModel.selecionar(it)
-                                irParaFilme()
+                            ItemFilme(it.nome) {
+                                irParaFilme(it.id)
                             }
 
                             Surface(
                                 modifier = Modifier
                                     .size(36.dp)
-                                    .clickable(onClick = { filmeViewModel.excluirDownload(it) }),
+                                    .clickable(onClick = { filmeViewModel.excluirDownload(it, filmeDAO) }),
                                 shape = RoundedCornerShape(18.dp),
                                 color = Color(255, 255, 255)
                             ) {

@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,13 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
 
     var novoPerfil by remember { mutableStateOf("") }
     val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val perfilDAO = db.perfilDAO()
+
+    // Ao abrir a tela, busca os perfis no banco
+    LaunchedEffect(Unit) {
+        viewModel.carregar(perfilDAO)
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -109,7 +117,7 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
                         if (novoPerfil == "") {
                             Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
                         } else {
-                            viewModel.adicionar(novoPerfil)
+                            viewModel.adicionar(novoPerfil, perfilDAO)
                             novoPerfil = ""
                         }
                     }
@@ -136,13 +144,13 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
                 ) {
                     Spacer(modifier = Modifier.width(16.dp))
                     Avatar(
-                        it,
-                        if (it == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
+                        it.nome,
+                        if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
                         Modifier.size(56.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = it,
+                        text = it.nome,
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
@@ -190,7 +198,7 @@ fun Avatar(nome: String, cor: Color, modifier: Modifier) {
 }
 
 @Composable
-fun Perfil(nome: String, cor: Color, modifier: Modifier, aoClicar: () -> Unit) {
+fun ItemPerfil(nome: String, cor: Color, modifier: Modifier, aoClicar: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable(onClick = { aoClicar() })

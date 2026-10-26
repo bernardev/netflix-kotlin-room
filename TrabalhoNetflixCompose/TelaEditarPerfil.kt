@@ -34,6 +34,8 @@ fun TelaEditarPerfil(viewModel: PerfilViewModel, voltar: () -> Unit, irParaPerfi
 
     var campo by remember { mutableStateOf(viewModel.perfilAtual) }
     val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val perfilDAO = db.perfilDAO()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Spacer(modifier = Modifier.height(30.dp))
@@ -124,7 +126,7 @@ fun TelaEditarPerfil(viewModel: PerfilViewModel, voltar: () -> Unit, irParaPerfi
                     if (campo == "") {
                         Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
                     } else {
-                        viewModel.renomear(campo)
+                        viewModel.renomear(campo, perfilDAO)
                         Toast.makeText(context, "Perfil salvo: $campo", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -134,7 +136,7 @@ fun TelaEditarPerfil(viewModel: PerfilViewModel, voltar: () -> Unit, irParaPerfi
 
             Button(
                 onClick = {
-                    viewModel.excluir()
+                    viewModel.excluir(perfilDAO)
                     irParaPerfis()
                 }
             ) {

@@ -53,7 +53,7 @@ fun App() {
                     filmeViewModel = filmeViewModel,
                     irParaBuscar = { navController.navigate("buscar") },
                     irParaMenu = { navController.navigate("menu") },
-                    irParaFilme = { navController.navigate("filme") }
+                    irParaFilme = { navController.navigate("filme/$it") }
                 )
             }
 
@@ -63,17 +63,21 @@ fun App() {
                     filmeViewModel = filmeViewModel,
                     irParaInicio = { navController.navigate("inicio") },
                     irParaMenu = { navController.navigate("menu") },
-                    irParaFilme = { navController.navigate("filme") }
+                    irParaFilme = { navController.navigate("filme/$it") }
                 )
             }
 
-            composable("filme") {
+            // Rota com argumento: a tela de filme recebe so o id e busca o filme direto no banco
+            composable("filme/{id}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
                 TelaFilme(
+                    id = id,
                     viewModel = viewModel,
                     filmeViewModel = filmeViewModel,
                     irParaInicio = { navController.navigate("inicio") },
                     irParaBuscar = { navController.navigate("buscar") },
                     irParaMenu = { navController.navigate("menu") },
+                    irParaFilme = { navController.navigate("filme/$it") },
                     voltar = { navController.popBackStack() }
                 )
             }
@@ -85,7 +89,7 @@ fun App() {
                     irParaInicio = { navController.navigate("inicio") },
                     irParaBuscar = { navController.navigate("buscar") },
                     irParaMenu = { navController.navigate("menu") },
-                    irParaFilme = { navController.navigate("filme") }
+                    irParaFilme = { navController.navigate("filme/$it") }
                 )
             }
 
