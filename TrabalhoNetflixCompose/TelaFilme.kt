@@ -1,9 +1,8 @@
 package com.example.netflix
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -52,7 +53,20 @@ fun TelaFilme(id: Int, viewModel: PerfilViewModel, filmeViewModel: FilmeViewMode
         filmeViewModel.carregar(filmeDAO)
     }
 
+    // Descobre se o perfil atual e admin (so admin pode renomear e excluir filmes)
+    var ehAdmin = false
+    viewModel.nomesAdmin.forEach {
+        if (it == viewModel.perfilAtual) {
+            ehAdmin = true
+        }
+    }
+
+    // A tela e dividida em secoes dentro de uma LazyColumn, para o conteudo rolar
+    // e nada ficar cortado em telas menores (ex.: perfil admin, que tem mais campos)
+    val secoes = listOf("capa", "acoes", "admin", "recomendacoes")
+
     Scaffold(
+        topBar = { BarraTopo("Detalhes do filme", voltar) },
         bottomBar = { BarraInferior("filme", viewModel.perfilAtual, irParaInicio, irParaBuscar, irParaMenu) }
     ) { innerPadding ->
 
@@ -60,101 +74,120 @@ fun TelaFilme(id: Int, viewModel: PerfilViewModel, filmeViewModel: FilmeViewMode
             modifier = Modifier.fillMaxSize(),
             color = Color.Black
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxWidth().height(120.dp),
-                    color = Color(62, 92, 118)
-                ) {
-                    Capa(filme.nome)
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = "▶ Assistir",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
 
-                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    Text(
-                        text = filme.nome,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                items(secoes) { secao ->
 
-                    if (filme.baixado) {
+                    if (secao == "capa") {
+                        // Capa grande com o nome do filme por cima (mesmo estilo do banner da tela Inicio)
                         Surface(
-                            shape = RoundedCornerShape(4.dp),
-                            color = Color(46, 158, 91)
+                            modifier = Modifier.fillMaxWidth().height(220.dp),
+                            color = Color(62, 92, 118)
                         ) {
-                            Text(
-                                text = "Baixado",
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(4.dp)
-                            )
+                            Capa(filme.nome)
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = Color(0, 0, 0, 120)
+                            ) {
+
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxSize().padding(16.dp),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Spacer(modifier = Modifier.height(1.dp))
+                                Column {
+                                    Text(
+                                        text = filme.nome,
+                                        color = Color(255, 255, 255),
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    if (filme.baixado) {
+                                        Surface(
+                                            shape = RoundedCornerShape(4.dp),
+                                            color = Color(46, 158, 91)
+                                        ) {
+                                            Text(
+                                                text = "Baixado",
+                                                color = Color(255, 255, 255),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                modifier = Modifier.padding(4.dp)
+                                            )
+                                        }
+                                    } else {
+                                        Spacer(modifier = Modifier.height(0.dp))
+                                    }
+                                }
+                            }
                         }
-                    } else {
-                        Spacer(modifier = Modifier.height(0.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    if (secao == "acoes") {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            BotaoBanner("▶ Assistir", Modifier.fillMaxWidth())
 
-                    BotaoBanner("▶ Assistir", Modifier.fillMaxWidth())
-                    Spacer(modifier = Modifier.height(8.dp))
-                    BotaoBanner(
-                        "↓ Baixar",
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                onClick = {
+                            if (filme.baixado) {
+                                BotaoNetflix("✓ Ja baixado", Color(43, 43, 43), Modifier.fillMaxWidth()) {
+                                    Toast.makeText(context, "Este filme ja esta nos seus downloads", Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                BotaoNetflix("↓ Baixar", Color(43, 43, 43), Modifier.fillMaxWidth()) {
                                     filmeViewModel.baixar(filme, filmeDAO)
                                     filme = Filme(filme.id, filme.nome, true)
                                     Toast.makeText(context, "Download concluido", Toast.LENGTH_SHORT).show()
                                 }
+                            }
+
+                            Text(
+                                text = "Sinopse",
+                                color = Color(255, 255, 255),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
                             )
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "Descricao do filme",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Assista ${filme.nome} na Netflix. Baixe para ver sem internet.",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    viewModel.nomesAdmin.forEach {
-                        if (it == viewModel.perfilAtual) {
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = novoNome,
-                                onValueChange = { novoNome = it },
-                                placeholder = { Text("Novo nome do filme") }
+                            Text(
+                                text = "Assista ${filme.nome} na Netflix. Baixe para ver sem internet.",
+                                color = CinzaTexto,
+                                style = MaterialTheme.typography.bodyLarge
                             )
+                        }
+                    }
 
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround
+                    if (secao == "admin") {
+                        if (ehAdmin) {
+                            // Area do administrador separada em um cartao com borda vermelha
+                            Card(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = CinzaCartao
+                                ),
+                                border = BorderStroke(1.dp, VermelhoNetflix)
                             ) {
-                                Button(
-                                    onClick = {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    Text(
+                                        text = "Area do administrador",
+                                        color = Color(255, 255, 255),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    TextField(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        value = novoNome,
+                                        onValueChange = { novoNome = it },
+                                        placeholder = { Text("Novo nome do filme") }
+                                    )
+                                    BotaoNetflix("Salvar nome", VermelhoNetflix, Modifier.fillMaxWidth()) {
                                         if (novoNome == "") {
                                             Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
                                         } else {
@@ -163,49 +196,44 @@ fun TelaFilme(id: Int, viewModel: PerfilViewModel, filmeViewModel: FilmeViewMode
                                             novoNome = ""
                                         }
                                     }
-                                ) {
-                                    Text("Salvar nome")
-                                }
-
-                                Button(
-                                    onClick = {
+                                    BotaoNetflix("Excluir filme", Color(43, 43, 43), Modifier.fillMaxWidth()) {
                                         filmeViewModel.excluir(filme, filmeDAO)
                                         voltar()
                                     }
-                                ) {
-                                    Text("Excluir filme")
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-                        } else {
-                            Spacer(modifier = Modifier.height(0.dp))
                         }
                     }
 
-                    Text(
-                        text = "Recomendacoes",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    if (secao == "recomendacoes") {
+                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                            Text(
+                                text = "Recomendacoes",
+                                color = Color(255, 255, 255),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Cartaz("O Mentalista", Color(140, 28, 19)) {
-                            abrirFilme("O Mentalista", filmeViewModel, context, irParaFilme)
-                        }
-                        Cartaz("The Vampire Diaries", Color(46, 42, 79)) {
-                            abrirFilme("The Vampire Diaries", filmeViewModel, context, irParaFilme)
-                        }
-                        Cartaz("Bird Box", Color(75, 96, 67)) {
-                            abrirFilme("Bird Box", filmeViewModel, context, irParaFilme)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Cartaz("O Mentalista", Color(140, 28, 19)) {
+                                    abrirFilme("O Mentalista", filmeViewModel, context, irParaFilme)
+                                }
+                                Cartaz("The Vampire Diaries", Color(46, 42, 79)) {
+                                    abrirFilme("The Vampire Diaries", filmeViewModel, context, irParaFilme)
+                                }
+                                Cartaz("Bird Box", Color(75, 96, 67)) {
+                                    abrirFilme("Bird Box", filmeViewModel, context, irParaFilme)
+                                }
+                            }
                         }
                     }
+
                 }
+
             }
         }
     }

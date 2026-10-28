@@ -1,8 +1,8 @@
 package com.example.netflix
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,121 +37,68 @@ fun TelaMenu(viewModel: PerfilViewModel, voltar: () -> Unit, sair: () -> Unit, i
         viewModel.carregar(perfilDAO)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Spacer(modifier = Modifier.height(30.dp))
+    Column(modifier = Modifier.fillMaxSize()) {
 
-        Cabecalho("Perfis", voltar)
+        BarraTopo("Minha Netflix", voltar)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
 
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            color = Color(28, 28, 28)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Avatar(viewModel.perfilAtual, Color(232, 176, 4), Modifier.size(80.dp))
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = viewModel.perfilAtual,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            viewModel.perfis.forEach {
-                ItemPerfil(
-                    it.nome,
-                    if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
-                    Modifier.size(48.dp),
-                    { viewModel.selecionar(it) }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
+            // Cartao do perfil atual, com borda vermelha
             Surface(
-                modifier = Modifier.clickable(onClick = { irParaEditar() }),
-                shape = RoundedCornerShape(24.dp),
-                color = Color(43, 43, 43)
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                color = CinzaCartao,
+                border = BorderStroke(2.dp, VermelhoNetflix)
             ) {
-                Text(
-                    text = "Editar perfil",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(12.dp)
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Avatar(viewModel.perfilAtual, Color(232, 176, 4), Modifier.size(80.dp))
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = viewModel.perfilAtual,
+                        color = Color(255, 255, 255),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = "${viewModel.perfis.size} perfis nesta conta",
+                        color = CinzaTexto,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    BotaoNetflix("Editar perfil", VermelhoNetflix, Modifier.fillMaxWidth()) {
+                        irParaEditar()
+                    }
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        ItemMenu("Configuracoes do aplicativo", {})
-        Spacer(modifier = Modifier.height(8.dp))
-        ItemMenu("Downloads", irParaDownloads)
-        Spacer(modifier = Modifier.height(8.dp))
-        ItemMenu("Ajuda", {})
-        Spacer(modifier = Modifier.height(8.dp))
-        ItemMenu("Sair", sair)
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = "Versao: 18.46.1 (17)",
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun Cabecalho(titulo: String, voltar: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Surface(
-            modifier = Modifier
-                .size(36.dp)
-                .clickable(onClick = { voltar() }),
-            shape = RoundedCornerShape(18.dp),
-            color = Color(255, 255, 255)
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Voltar"
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ItemMenu("Trocar de perfil", sair)
+                ItemMenu("Downloads", irParaDownloads)
+                ItemMenu("Configuracoes do aplicativo", {})
+                ItemMenu("Ajuda", {})
+                ItemMenu("Sair", sair)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Versao: 18.46.1 (17)",
+                color = CinzaTexto,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-        Text(
-            text = titulo,
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.width(36.dp))
     }
 }
 
@@ -175,12 +118,12 @@ fun ItemMenu(texto: String, aoClicar: () -> Unit) {
         ) {
             Text(
                 text = texto,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color(255, 255, 255),
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = ">",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color(255, 255, 255),
                 style = MaterialTheme.typography.bodyLarge
             )
         }

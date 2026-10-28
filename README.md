@@ -63,6 +63,7 @@ As dependências que já vinham do Trabalho 2 (Navigation Compose, ViewModel no 
 | `FilmeDAO.kt` | `@Dao` com `inserir`, `buscarTodos`, `atualizar`, `deletar` e as consultas filtradas `buscarPorId(id)` e `buscarBaixados()` |
 | `PerfilDAO.kt` | `@Dao` com `inserir`, `buscarTodos`, `atualizar` e `deletar` |
 | `AppDatabase.kt` | `@Database(entities = [Filme::class, Perfil::class], version = 1)` em padrão Singleton (`companion object` + `@Volatile` + `synchronized`) |
+| `Componentes.kt` | Cores do app, barra superior (`TopAppBar`) e botão vermelho reutilizados em todas as telas |
 
 Todos os métodos dos DAOs são `suspend fun`. Toda chamada ao banco é feita dentro de `CoroutineScope(Dispatchers.IO).launch { ... }` e protegida com `try/catch` + `Log.e(...)`, como no exemplo de Filmes da aula.
 
@@ -75,6 +76,23 @@ Todos os métodos dos DAOs são `suspend fun`. Toda chamada ao banco é feita de
 | **Inserir** | Botão **Add** na tela de Perfis (novo perfil) e na tela Buscar (novo filme) | `inserir(...)` |
 | **Atualizar** | **Salvar nome** na tela do filme (perfil admin), **Salvar** em Editar perfil, **Baixar** na tela do filme e a lixeira em Downloads (muda o campo `baixado`) | `atualizar(...)` |
 | **Remover** | **Excluir filme** na tela do filme (perfil admin) e **Excluir perfil** em Editar perfil | `deletar(...)` |
+
+---
+
+## Melhorias de layout e usabilidade (pedido do professor)
+
+Usamos só componentes vistos no material da disciplina (slides e código das aulas):
+
+| Onde | O que mudou | Componente do material |
+|---|---|---|
+| Todas as telas | Paleta única: fundo preto, cartões cinza-escuro e vermelho da Netflix (`Componentes.kt`) | `Color(r, g, b)` |
+| Menu, Editar perfil, Downloads e Filme | Barra superior padrão com título e botão de voltar, no lugar do cabeçalho feito à mão | `TopAppBar` + `TopAppBarDefaults.topAppBarColors` + `IconButton` |
+| Botões de ação (Add, Salvar, Baixar, Excluir) | Botões no vermelho da Netflix; ações destrutivas (Excluir) em cinza, para não serem tocadas por engano | `Surface` + `clickable` + `shadowElevation` |
+| Perfis, Buscar e Downloads | Itens das listas em cartões, com espaçamento uniforme; o perfil atual ganha borda vermelha | `Card` + `CardDefaults.cardColors` + `BorderStroke` + `Arrangement.spacedBy` |
+| Tela do filme | Capa maior com o nome por cima; o conteúdo agora **rola** (antes, no perfil Admin, as recomendações ficavam cortadas); área do administrador separada num cartão | `LazyColumn` + `items` |
+| Downloads | Contador de filmes baixados e aviso quando a lista está vazia | `Text`, `Card`, `if/else` |
+| Menu | A fileira de avatares estourava a largura com muitos perfis; virou o item "Trocar de perfil" | `Column` + `Arrangement.spacedBy` |
+| Barra inferior | Aba atual destacada em vermelho | `Surface` |
 
 ---
 

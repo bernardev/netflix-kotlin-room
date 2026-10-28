@@ -1,6 +1,7 @@
 package com.example.netflix
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,7 +66,7 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
                     text = "VS",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color(255, 255, 255),
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -83,7 +85,7 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
             ) {
                 Text(
                     text = "NETFLIX",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color(255, 255, 255),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(4.dp)
@@ -91,14 +93,14 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
             }
             Text(
                 text = "GAMEDAY",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color(255, 255, 255),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Escolha o seu perfil",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color(255, 255, 255),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -112,49 +114,63 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
                     placeholder = { Text("Novo perfil") }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = {
-                        if (novoPerfil == "") {
-                            Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
-                        } else {
-                            viewModel.adicionar(novoPerfil, perfilDAO)
-                            novoPerfil = ""
-                        }
+                BotaoNetflix("Add", VermelhoNetflix, Modifier.width(80.dp)) {
+                    if (novoPerfil == "") {
+                        Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.adicionar(novoPerfil, perfilDAO)
+                        novoPerfil = ""
                     }
-                ) {
-                    Text("Add")
                 }
             }
         }
 
-        LazyColumn {
+        // Cada perfil e um cartao escuro; o perfil atual ganha borda vermelha
+        LazyColumn(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
 
             items(viewModel.perfis) {
-                Row(
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
                         .clickable(
                             onClick = {
                                 viewModel.selecionar(it)
                                 irParaInicio()
                             }
                         ),
-                    verticalAlignment = Alignment.CenterVertically
+                    colors = CardDefaults.cardColors(
+                        containerColor = CinzaCartao
+                    ),
+                    border = if (it.nome == viewModel.perfilAtual) BorderStroke(2.dp, VermelhoNetflix) else BorderStroke(1.dp, CinzaBorda)
                 ) {
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Avatar(
-                        it.nome,
-                        if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
-                        Modifier.size(56.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = it.nome,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Avatar(
+                                it.nome,
+                                if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
+                                Modifier.size(56.dp)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = it.nome,
+                                color = Color(255, 255, 255),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(
+                            text = ">",
+                            color = CinzaTexto,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
                 }
             }
 
@@ -172,7 +188,7 @@ fun Time(sigla: String, cor: Color) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = sigla,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color(255, 255, 255),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -207,7 +223,7 @@ fun ItemPerfil(nome: String, cor: Color, modifier: Modifier, aoClicar: () -> Uni
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = nome,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = Color(255, 255, 255),
             style = MaterialTheme.typography.bodyMedium
         )
     }

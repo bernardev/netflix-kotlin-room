@@ -57,7 +57,7 @@ fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
                     ) {
                         Text(
                             text = "N",
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = Color(255, 255, 255),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(4.dp)
@@ -66,7 +66,7 @@ fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Para ${viewModel.perfilAtual}",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = Color(255, 255, 255),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -106,19 +106,19 @@ fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = "GRAND THEFT AUTO",
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = Color(255, 255, 255),
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "UM OLHAR ESTENDIDO",
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = Color(255, 255, 255),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 text = "Estreia exclusiva",
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = Color(255, 255, 255),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(modifier = Modifier.height(12.dp))
@@ -138,7 +138,7 @@ fun TelaInicio(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
 
                 Text(
                     text = "Series dramaticas",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color(255, 255, 255),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -185,7 +185,7 @@ fun Filtro(texto: String) {
     ) {
         Text(
             text = texto,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = Color(255, 255, 255),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(10.dp)
         )
@@ -202,7 +202,7 @@ fun BotaoBanner(texto: String, modifier: Modifier) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = texto,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(10.dp)
             )
@@ -234,7 +234,7 @@ fun Cartaz(titulo: String, cor: Color, aoClicar: () -> Unit) {
             ) {
                 Text(
                     text = titulo,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color(255, 255, 255),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(3.dp)
@@ -249,11 +249,11 @@ fun ItemBarra(texto: String, tela: String, telaAtual: String, aoClicar: () -> Un
     Surface(
         modifier = Modifier.clickable(onClick = { aoClicar() }),
         shape = RoundedCornerShape(24.dp),
-        color = if (tela == telaAtual) Color(255, 255, 255) else Color(43, 43, 43)
+        color = if (tela == telaAtual) VermelhoNetflix else Color(43, 43, 43)
     ) {
         Text(
             text = texto,
-            color = if (tela == telaAtual) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary,
+            color = Color(255, 255, 255),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(10.dp)
         )
@@ -283,7 +283,7 @@ fun BarraInferior(telaAtual: String, perfil: String, irParaInicio: () -> Unit, i
                 Avatar(perfil, Color(232, 176, 4), Modifier.size(24.dp))
                 Text(
                     text = "Minha Netflix",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color(255, 255, 255),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
