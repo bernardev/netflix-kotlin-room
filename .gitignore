@@ -1,2 +1,12 @@
-ecoville-noite-quarta-e-quinta/
 *.apk
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+.kotlin

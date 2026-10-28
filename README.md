@@ -8,11 +8,23 @@ App Android em Kotlin + Jetpack Compose que imita a Netflix. Ele continua o Trab
 
 ## Como rodar o projeto
 
-1. Abra o projeto no **Android Studio**. Se for criar um projeto novo, use o modelo *Empty Activity* com o pacote `com.example.netflix`.
-2. Os arquivos `.kt` da pasta `TrabalhoNetflixCompose/` vão em `app/src/main/java/com/example/netflix/`.
-3. As imagens da pasta `TrabalhoNetflixCompose/res/drawable/` vão em `app/src/main/res/drawable/`.
-4. Configure o Gradle como mostrado na seção abaixo e clique em **Sync Now**.
-5. Rode o app em um emulador ou celular (botão ▶ Run).
+1. No **Android Studio**: *File > Open* e escolha a pasta raiz deste repositório (a que tem `settings.gradle.kts`).
+2. Espere o **Gradle Sync** terminar. O Android Studio baixa o Gradle e as bibliotecas sozinho.
+3. Rode o app em um emulador ou celular (botão ▶ Run).
+
+Estrutura do projeto (modelo *Empty Activity*, pacote `com.example.netflix`):
+
+```
+settings.gradle.kts
+build.gradle.kts              <- plugins do projeto (com o KSP)
+gradle/libs.versions.toml     <- versões usadas pelos alias(libs...)
+app/build.gradle.kts          <- módulo: Compose, Navigation e Room
+app/src/main/AndroidManifest.xml
+app/src/main/java/com/example/netflix/*.kt
+app/src/main/res/drawable/    <- capas e fotos de perfil
+```
+
+> **Se o Sync reclamar de versão** (AGP, Kotlin ou Gradle mais novo/antigo que o Android Studio da máquina): aceite a sugestão de atualização do próprio Android Studio, ou crie um projeto *Empty Activity* novo nessa máquina e copie para cá o `gradle/libs.versions.toml` e o `gradle/wrapper/gradle-wrapper.properties` dele. O `app/build.gradle.kts` não muda.
 
 ### Configuração do Room no Gradle (mesma ordem vista em aula)
 
@@ -50,7 +62,7 @@ ksp("androidx.room:room-compiler:$room_version")
 
 > `2.8.0` é a versão mostrada no slide da página de versões do Room. O outro slide da aula usa `2.6.1`, mas só para o Android Studio 2022.3.1. Com o Android Studio atual, use a `2.8.0`.
 
-As dependências que já vinham do Trabalho 2 (Navigation Compose, ViewModel no Compose e ícones do Material) continuam iguais.
+As dependências que já vinham do Trabalho 2 continuam no `app/build.gradle.kts`: Navigation Compose `2.10.2` e `material-icons-core:1.7.8` (como no `build.gradle.kts` da Aula 13) e `lifecycle-viewmodel-compose` (para o `viewModel()`).
 
 ---
 
