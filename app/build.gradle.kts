@@ -53,8 +53,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // ViewModel no Compose: viewModel()
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // ViewModel no Compose: viewModel() (LEIA-ME da Aula 13)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
     // Icones (Aula 13)
     implementation("androidx.compose.material:material-icons-core:1.7.8")

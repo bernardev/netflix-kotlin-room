@@ -139,11 +139,14 @@ fun TelaBuscar(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, irPar
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                LazyColumn {
 
                     items(filmeViewModel.filmes) {
-                        ItemFilme(it.nome) {
-                            irParaFilme(it.id)
+                        Column {
+                            ItemFilme(it.nome) {
+                                irParaFilme(it.id)
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
 

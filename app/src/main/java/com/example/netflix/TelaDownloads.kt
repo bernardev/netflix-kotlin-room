@@ -88,63 +88,66 @@ fun TelaDownloads(viewModel: PerfilViewModel, filmeViewModel: FilmeViewModel, ir
                     Spacer(modifier = Modifier.height(0.dp))
                 }
 
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                LazyColumn {
 
                     items(filmeViewModel.baixados) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = CinzaCartao
-                            ),
-                            border = BorderStroke(1.dp, CinzaBorda)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                        Column {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = CinzaCartao
+                                ),
+                                border = BorderStroke(1.dp, CinzaBorda)
                             ) {
                                 Row(
-                                    modifier = Modifier.clickable(onClick = { irParaFilme(it.id) }),
+                                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Surface(
-                                        modifier = Modifier.width(110.dp).height(70.dp),
-                                        shape = RoundedCornerShape(6.dp),
-                                        color = Color(62, 92, 118)
+                                    Row(
+                                        modifier = Modifier.clickable(onClick = { irParaFilme(it.id) }),
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Capa(it.nome)
+                                        Surface(
+                                            modifier = Modifier.width(110.dp).height(70.dp),
+                                            shape = RoundedCornerShape(6.dp),
+                                            color = Color(62, 92, 118)
+                                        ) {
+                                            Capa(it.nome)
+                                        }
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column {
+                                            Text(
+                                                text = it.nome,
+                                                color = Color(255, 255, 255),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "Baixado",
+                                                color = Color(46, 158, 91),
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                        }
                                     }
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Column {
-                                        Text(
-                                            text = it.nome,
-                                            color = Color(255, 255, 255),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Baixado",
-                                            color = Color(46, 158, 91),
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
 
-                                Surface(
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .clickable(onClick = { filmeViewModel.excluirDownload(it, filmeDAO) }),
-                                    shape = RoundedCornerShape(18.dp),
-                                    color = Color(255, 255, 255)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Excluir download"
-                                        )
+                                    Surface(
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .clickable(onClick = { filmeViewModel.excluirDownload(it, filmeDAO) }),
+                                        shape = RoundedCornerShape(18.dp),
+                                        color = Color(255, 255, 255)
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Excluir download"
+                                            )
+                                        }
                                     }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
 

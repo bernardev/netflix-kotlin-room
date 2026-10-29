@@ -62,7 +62,7 @@ ksp("androidx.room:room-compiler:$room_version")
 
 > `2.8.0` é a versão mostrada no slide da página de versões do Room. O outro slide da aula usa `2.6.1`, mas só para o Android Studio 2022.3.1. Com o Android Studio atual, use a `2.8.0`.
 
-As dependências que já vinham do Trabalho 2 continuam no `app/build.gradle.kts`: Navigation Compose `2.10.2` e `material-icons-core:1.7.8` (como no `build.gradle.kts` da Aula 13) e `lifecycle-viewmodel-compose` (para o `viewModel()`).
+As dependências que já vinham do Trabalho 2 continuam no `app/build.gradle.kts`: Navigation Compose `2.10.2` e `material-icons-core:1.7.8` (como no `build.gradle.kts` da Aula 13) e `lifecycle-viewmodel-compose:2.11.0` (para o `viewModel()`, como no LEIA-ME da Aula 13).
 
 ---
 

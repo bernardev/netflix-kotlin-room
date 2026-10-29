@@ -74,166 +74,164 @@ fun TelaFilme(id: Int, viewModel: PerfilViewModel, filmeViewModel: FilmeViewMode
             modifier = Modifier.fillMaxSize(),
             color = Color.Black
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+            Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                LazyColumn {
 
-                items(secoes) { secao ->
+                    items(secoes) { secao ->
 
-                    if (secao == "capa") {
-                        // Capa grande com o nome do filme por cima (mesmo estilo do banner da tela Inicio)
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().height(220.dp),
-                            color = Color(62, 92, 118)
-                        ) {
-                            Capa(filme.nome)
+                        if (secao == "capa") {
+                            // Capa grande com o nome do filme por cima (mesmo estilo do banner da tela Inicio)
                             Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = Color(0, 0, 0, 120)
+                                modifier = Modifier.fillMaxWidth().height(220.dp),
+                                color = Color(62, 92, 118)
                             ) {
-
-                            }
-                            Column(
-                                modifier = Modifier.fillMaxSize().padding(16.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Spacer(modifier = Modifier.height(1.dp))
-                                Column {
-                                    Text(
-                                        text = filme.nome,
-                                        color = Color(255, 255, 255),
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    if (filme.baixado) {
-                                        Surface(
-                                            shape = RoundedCornerShape(4.dp),
-                                            color = Color(46, 158, 91)
-                                        ) {
-                                            Text(
-                                                text = "Baixado",
-                                                color = Color(255, 255, 255),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                fontWeight = FontWeight.Bold,
-                                                modifier = Modifier.padding(4.dp)
-                                            )
-                                        }
-                                    } else {
-                                        Spacer(modifier = Modifier.height(0.dp))
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (secao == "acoes") {
-                        Column(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            BotaoBanner("▶ Assistir", Modifier.fillMaxWidth())
-
-                            if (filme.baixado) {
-                                BotaoNetflix("✓ Ja baixado", Color(43, 43, 43), Modifier.fillMaxWidth()) {
-                                    Toast.makeText(context, "Este filme ja esta nos seus downloads", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
-                                BotaoNetflix("↓ Baixar", Color(43, 43, 43), Modifier.fillMaxWidth()) {
-                                    filmeViewModel.baixar(filme, filmeDAO)
-                                    filme = Filme(filme.id, filme.nome, true)
-                                    Toast.makeText(context, "Download concluido", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-
-                            Text(
-                                text = "Sinopse",
-                                color = Color(255, 255, 255),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = "Assista ${filme.nome} na Netflix. Baixe para ver sem internet.",
-                                color = CinzaTexto,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-
-                    if (secao == "admin") {
-                        if (ehAdmin) {
-                            // Area do administrador separada em um cartao com borda vermelha
-                            Card(
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = CinzaCartao
-                                ),
-                                border = BorderStroke(1.dp, VermelhoNetflix)
-                            ) {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                Capa(filme.nome)
+                                Surface(
+                                    modifier = Modifier.fillMaxSize(),
+                                    color = Color(0, 0, 0, 120)
                                 ) {
-                                    Text(
-                                        text = "Area do administrador",
-                                        color = Color(255, 255, 255),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    TextField(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        value = novoNome,
-                                        onValueChange = { novoNome = it },
-                                        placeholder = { Text("Novo nome do filme") }
-                                    )
-                                    BotaoNetflix("Salvar nome", VermelhoNetflix, Modifier.fillMaxWidth()) {
-                                        if (novoNome == "") {
-                                            Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
+
+                                }
+                                Column(
+                                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Spacer(modifier = Modifier.height(1.dp))
+                                    Column {
+                                        Text(
+                                            text = filme.nome,
+                                            color = Color(255, 255, 255),
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        if (filme.baixado) {
+                                            Surface(
+                                                shape = RoundedCornerShape(4.dp),
+                                                color = Color(46, 158, 91)
+                                            ) {
+                                                Text(
+                                                    text = "Baixado",
+                                                    color = Color(255, 255, 255),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.Bold,
+                                                    modifier = Modifier.padding(4.dp)
+                                                )
+                                            }
                                         } else {
-                                            filmeViewModel.renomear(filme, novoNome, filmeDAO)
-                                            filme = Filme(filme.id, novoNome, filme.baixado)
-                                            novoNome = ""
+                                            Spacer(modifier = Modifier.height(0.dp))
                                         }
                                     }
-                                    BotaoNetflix("Excluir filme", Color(43, 43, 43), Modifier.fillMaxWidth()) {
-                                        filmeViewModel.excluir(filme, filmeDAO)
-                                        voltar()
+                                }
+                            }
+                        }
+
+                        if (secao == "acoes") {
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                BotaoBanner("▶ Assistir", Modifier.fillMaxWidth())
+
+                                if (filme.baixado) {
+                                    BotaoNetflix("✓ Ja baixado", Color(43, 43, 43), Modifier.fillMaxWidth()) {
+                                        Toast.makeText(context, "Este filme ja esta nos seus downloads", Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    BotaoNetflix("↓ Baixar", Color(43, 43, 43), Modifier.fillMaxWidth()) {
+                                        filmeViewModel.baixar(filme, filmeDAO)
+                                        filme = Filme(filme.id, filme.nome, true)
+                                        Toast.makeText(context, "Download concluido", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+
+                                Text(
+                                    text = "Sinopse",
+                                    color = Color(255, 255, 255),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Assista ${filme.nome} na Netflix. Baixe para ver sem internet.",
+                                    color = CinzaTexto,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
+                        }
+
+                        if (secao == "admin") {
+                            if (ehAdmin) {
+                                // Area do administrador separada em um cartao com borda vermelha
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = CinzaCartao
+                                    ),
+                                    border = BorderStroke(1.dp, VermelhoNetflix)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) {
+                                        Text(
+                                            text = "Area do administrador",
+                                            color = Color(255, 255, 255),
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        TextField(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            value = novoNome,
+                                            onValueChange = { novoNome = it },
+                                            placeholder = { Text("Novo nome do filme") }
+                                        )
+                                        BotaoNetflix("Salvar nome", VermelhoNetflix, Modifier.fillMaxWidth()) {
+                                            if (novoNome == "") {
+                                                Toast.makeText(context, "Digite um nome", Toast.LENGTH_SHORT).show()
+                                            } else {
+                                                filmeViewModel.renomear(filme, novoNome, filmeDAO)
+                                                filme = Filme(filme.id, novoNome, filme.baixado)
+                                                novoNome = ""
+                                            }
+                                        }
+                                        BotaoNetflix("Excluir filme", Color(43, 43, 43), Modifier.fillMaxWidth()) {
+                                            filmeViewModel.excluir(filme, filmeDAO)
+                                            voltar()
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    if (secao == "recomendacoes") {
-                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                            Text(
-                                text = "Recomendacoes",
-                                color = Color(255, 255, 255),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
+                        if (secao == "recomendacoes") {
+                            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                                Text(
+                                    text = "Recomendacoes",
+                                    color = Color(255, 255, 255),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Cartaz("O Mentalista", Color(140, 28, 19)) {
-                                    abrirFilme("O Mentalista", filmeViewModel, context, irParaFilme)
-                                }
-                                Cartaz("The Vampire Diaries", Color(46, 42, 79)) {
-                                    abrirFilme("The Vampire Diaries", filmeViewModel, context, irParaFilme)
-                                }
-                                Cartaz("Bird Box", Color(75, 96, 67)) {
-                                    abrirFilme("Bird Box", filmeViewModel, context, irParaFilme)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Cartaz("O Mentalista", Color(140, 28, 19)) {
+                                        abrirFilme("O Mentalista", filmeViewModel, context, irParaFilme)
+                                    }
+                                    Cartaz("The Vampire Diaries", Color(46, 42, 79)) {
+                                        abrirFilme("The Vampire Diaries", filmeViewModel, context, irParaFilme)
+                                    }
+                                    Cartaz("Bird Box", Color(75, 96, 67)) {
+                                        abrirFilme("Bird Box", filmeViewModel, context, irParaFilme)
+                                    }
                                 }
                             }
                         }
+
                     }
 
                 }
-
             }
         }
     }

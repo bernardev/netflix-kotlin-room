@@ -126,54 +126,56 @@ fun TelaPerfis(viewModel: PerfilViewModel, irParaInicio: () -> Unit) {
         }
 
         // Cada perfil e um cartao escuro; o perfil atual ganha borda vermelha
-        LazyColumn(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            LazyColumn {
 
-            items(viewModel.perfis) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            onClick = {
-                                viewModel.selecionar(it)
-                                irParaInicio()
+                items(viewModel.perfis) {
+                    Column {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    onClick = {
+                                        viewModel.selecionar(it)
+                                        irParaInicio()
+                                    }
+                                ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = CinzaCartao
+                            ),
+                            border = if (it.nome == viewModel.perfilAtual) BorderStroke(2.dp, VermelhoNetflix) else BorderStroke(1.dp, CinzaBorda)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Avatar(
+                                        it.nome,
+                                        if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
+                                        Modifier.size(56.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(
+                                        text = it.nome,
+                                        color = Color(255, 255, 255),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Text(
+                                    text = ">",
+                                    color = CinzaTexto,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
                             }
-                        ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = CinzaCartao
-                    ),
-                    border = if (it.nome == viewModel.perfilAtual) BorderStroke(2.dp, VermelhoNetflix) else BorderStroke(1.dp, CinzaBorda)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Avatar(
-                                it.nome,
-                                if (it.nome == viewModel.perfilAtual) Color(232, 176, 4) else Color(74, 107, 138),
-                                Modifier.size(56.dp)
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = it.nome,
-                                color = Color(255, 255, 255),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
                         }
-                        Text(
-                            text = ">",
-                            color = CinzaTexto,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
-            }
 
+            }
         }
     }
 }
