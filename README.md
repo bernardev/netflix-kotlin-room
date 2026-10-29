@@ -20,7 +20,10 @@ build.gradle.kts              <- plugins do projeto (com o KSP)
 gradle/libs.versions.toml     <- versões usadas pelos alias(libs...)
 app/build.gradle.kts          <- módulo: Compose, Navigation e Room
 app/src/main/AndroidManifest.xml
-app/src/main/java/com/example/netflix/*.kt
+app/src/main/java/com/example/netflix/
+    MainActivity.kt           <- ponto de entrada; chama AppNavigation()
+    AppNavigation.kt          <- NavHost com todas as rotas
+    Tela*.kt, *ViewModel.kt, Filme/Perfil, DAOs e AppDatabase
 app/src/main/res/drawable/    <- capas e fotos de perfil
 ```
 
@@ -75,6 +78,7 @@ As dependências que já vinham do Trabalho 2 continuam no `app/build.gradle.kts
 | `FilmeDAO.kt` | `@Dao` com `inserir`, `buscarTodos`, `atualizar`, `deletar` e as consultas filtradas `buscarPorId(id)` e `buscarBaixados()` |
 | `PerfilDAO.kt` | `@Dao` com `inserir`, `buscarTodos`, `atualizar` e `deletar` |
 | `AppDatabase.kt` | `@Database(entities = [Filme::class, Perfil::class], version = 1)` em padrão Singleton (`companion object` + `@Volatile` + `synchronized`) |
+| `AppNavigation.kt` | `NavHost` com todas as rotas do app, separado do `MainActivity` como no exemplo da Aula 13 (`MainActivity` -> `AppNavigation()`) |
 | `Componentes.kt` | Cores do app, barra superior (`TopAppBar`) e botão vermelho reutilizados em todas as telas |
 
 Todos os métodos dos DAOs são `suspend fun`. Toda chamada ao banco é feita dentro de `CoroutineScope(Dispatchers.IO).launch { ... }` e protegida com `try/catch` + `Log.e(...)`, como no exemplo de Filmes da aula.
